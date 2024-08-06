@@ -188,6 +188,8 @@ npm install
 ```
 
 Usual execution. The app typically is on port 3000. http://localhost:3000
+Although the app requires a few more ports to be available to operate correctly: 8080, 3002
+The console output will inform about the port: `Server ready: http://localhost:3000`
 
 ```sh
 npm start
