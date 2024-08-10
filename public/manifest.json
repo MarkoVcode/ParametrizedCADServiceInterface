@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Parametric CAD Objects",
+  "name": "Collection of 3D objects with exposed customization parameters",
   "icons": [
     {
       "src": "favicon.ico",

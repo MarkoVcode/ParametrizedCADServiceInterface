@@ -5,7 +5,11 @@ import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import ModelConfig from './ModelConfig';
+import ModelForm from './ModelForm';
 import ModelViewer from './ModelViewer';
+import ModelExport from './ModelExport';
+import ModelHeader from './ModelHeader';
+import ModelInfo from './ModelInfo';
 import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
@@ -24,13 +28,8 @@ const Item = styled(Paper)(({ theme }) => ({
 const ModelList = () => {
   const config = useConfig();
   const [models, setModels] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
   const [modelId, setModelId] = useState();
   const [modelLink, setModelLink] = useState();
-
-  function toggle() {
-    setIsOpen((isOpen) => !isOpen);
-  }
 
   useEffect(() => {
     fetch(config.app.CAD_SERVICE_URL + '/models')
@@ -42,47 +41,20 @@ const ModelList = () => {
       });
   }, []);
 
+  const onClearModelId = (event) => {
+    setModelId(null);
+  }
+
   return (
     <>
-      {models.map((model) => (
-        <Grid item xs={12} md={8} lg={4} key={model.id}> 
-            <Card variant="outlined" 
-            onClick={() => {
-              setModelId(model.id);
-              setModelLink(model.defaultPreviewValues);
-              setIsOpen(true);
-            }}
-            sx={{ 
-              maxWidth: 360,
-              height: 200,
-            }}
-            >
-            <Box sx={{ p: 2 }}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Typography gutterBottom variant="h6" component="div">
-                  {model.name}
-                </Typography>
-              </Stack>
-              <Typography color="text.secondary" variant="body2">
-                {model.description}
-              </Typography>
-            </Box>
-            <Divider />
-            <Box sx={{ p: 2 }}>
-              <Typography gutterBottom variant="body2">
-                Labels
-              </Typography>
-              <Stack direction="row" spacing={1}>
-                <Chip color="primary" label="Soft" size="small" />
-                <Chip label="Medium" size="small" />
-                <Chip label="Hard" size="small" />
-              </Stack>
-            </Box>
-          </Card>
-          </Grid>
-      ))}
-      {modelId &&
+      {modelId ? (
         <>
+          <Grid item xs={12}>
+            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+              <ModelHeader modelsData={models} modelId={modelId} clearModelId={onClearModelId}/>
+            </Paper>
+          </Grid>
+
           <Grid item xs={12} md={8} lg={4}>
             <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
               <ModelConfig modelId={modelId} setModelLink={setModelLink} />
@@ -93,10 +65,34 @@ const ModelList = () => {
               <ModelViewer modelId={modelId} modelLink={modelLink} />
             </Paper>
           </Grid>
+          <Grid item xs={12}>
+            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+              <ModelExport />
+            </Paper>
+          </Grid>
         </>
-      }
+      ) : (
+        <>
+          {models.map((model) => (
+            <Grid item xs={12} md={8} lg={4} key={model.id}>
+              <Card variant="outlined"
+                onClick={() => {
+                  setModelId(model.id);
+                  setModelLink(model.defaultPreviewValues);
+                }}
+                sx={{
+                  maxWidth: 360,
+                  height: 200,
+                }}
+              >
+                <ModelInfo modelName={model.name} modelDescription={model.description} />
+              </Card>
+            </Grid>
+          ))}
+        </>
+      )}
     </>
   );
-};
+}
 
 export default ModelList;

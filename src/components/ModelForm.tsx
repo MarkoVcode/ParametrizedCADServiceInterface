@@ -5,9 +5,7 @@ import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import ModelForm from './ModelForm';
-import ModelViewer from './ModelViewer';
-import ModelExport from './ModelExport';
+import { Buffer } from 'buffer';
 import useConfig from "./useConfig";
 import { ObjectLinkAssembler, isFormDataDifferent } from "../tools/CadQueryAPI";
 
@@ -69,7 +67,6 @@ const ModelConfig = (props) => {
     }
   }
   //https://stackoverflow.com/questions/56219640/how-to-download-a-file-through-an-api-in-react
-  // here components share, form, preview and export
   return (
     <Box>
       <Typography gutterBottom variant="h6" component="div">

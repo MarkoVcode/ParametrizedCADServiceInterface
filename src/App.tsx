@@ -21,9 +21,15 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems, secondaryListItems } from './components/listItems';
-import ModelExport from './components/ModelExport';
 import ModelList from './components/ModelList';
+import Home from './components/Home';
 import useConfig from "./components/useConfig";
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import ListSubheader from '@mui/material/ListSubheader';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const defaultTheme = createTheme();
 
@@ -97,10 +103,34 @@ const AppBar = styled(MuiAppBar, {
 export default function App() {
   const config = useConfig();
   const [open, setOpen] = React.useState(true);
+  const [showHome, setShowHome] = React.useState(true);
+  const [showModels, setShowModels] = React.useState(false);
+  const [pageTitle, setPageTitle] = React.useState("Home");
   const [volume, setvolume] = React.useState(0);
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+  React.useEffect(() => {
+    console.log(window.location.pathname);
+    console.log(config);
+    //models/0000/NjA7ODA7MTE7MjI7MTI=
+    if (window.location.pathname.length > 10) {
+      window.location.href = config.app.APP_URL;
+    }
+  }, [])
+
+  const onModelsClick = (event) => {
+    setShowHome(false);
+    setShowModels(true);
+    setPageTitle("Models");
+  }
+
+  const onHomeClick = (event) => {
+    setShowModels(false);
+    setShowHome(true);
+    setPageTitle("Home");
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -131,7 +161,7 @@ export default function App() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              {pageTitle}
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
@@ -155,7 +185,18 @@ export default function App() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            {mainListItems}
+            <ListItemButton>
+              <ListItemIcon>
+                <DashboardIcon onClick={onHomeClick} />
+              </ListItemIcon>
+              <ListItemText onClick={onHomeClick} primary="Home" />
+            </ListItemButton>
+            <ListItemButton>
+              <ListItemIcon>
+                <ShoppingCartIcon onClick={onHomeClick} />
+              </ListItemIcon>
+              <ListItemText onClick={onModelsClick} primary="Models" />
+            </ListItemButton>
             <Divider sx={{ my: 1 }} />
             {secondaryListItems}
           </List>
@@ -174,15 +215,12 @@ export default function App() {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            {showHome && <Home />}
+            {showModels &&
             <Grid container spacing={3}>
-              {/* Models List here */}
               <ModelList />
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <ModelExport />
-                </Paper>
-              </Grid>
             </Grid>
+            }
             <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>

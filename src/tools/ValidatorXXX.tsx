@@ -8,6 +8,7 @@ export const Validator = (formObject, validator, compulsory) => {
 
     Object.keys(formObject).forEach(function(field) {
         var paramValue = formObject[field];
+        console.log(validator);
         if (validator[field].type == "number") {
             var paramValueB = parseFloat(paramValue);
             //check validation here
