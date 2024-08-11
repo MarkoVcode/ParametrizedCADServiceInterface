@@ -50,25 +50,25 @@ const ModelList = () => {
       {modelId ? (
         <>
           <Grid item xs={12}>
-            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-              <ModelHeader modelsData={models} modelId={modelId} clearModelId={onClearModelId}/>
+            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column',       borderRadius: 2,
+      boxShadow: 4 }}>
+              <ModelHeader modelsData={models} modelId={modelId} clearModelId={onClearModelId} />
             </Paper>
           </Grid>
-
           <Grid item xs={12} md={8} lg={4}>
-            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column',       borderRadius: 2,
+      boxShadow: 4 }}>
               <ModelConfig modelId={modelId} setModelLink={setModelLink} />
             </Paper>
           </Grid>
           <Grid item xs={12} md={8} lg={8}>
-            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column',      borderRadius: 2,
+      boxShadow: 4 }}>
               <ModelViewer modelId={modelId} modelLink={modelLink} />
             </Paper>
           </Grid>
           <Grid item xs={12}>
-            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-              <ModelExport />
-            </Paper>
+            <ModelExport />
           </Grid>
         </>
       ) : (
@@ -83,6 +83,8 @@ const ModelList = () => {
                 sx={{
                   maxWidth: 360,
                   height: 200,
+                  borderRadius: 2,
+                  boxShadow: 4,
                 }}
               >
                 <ModelInfo modelName={model.name} modelDescription={model.description} />

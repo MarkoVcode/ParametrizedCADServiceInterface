@@ -31,6 +31,7 @@ const config = {
     CAD_SERVICE_URL: "http://127.0.0.1:8000",
     APP_URL: "http://localhost:3000",
     //APP_URL: "https://a7zw71wyn1.execute-api.us-east-1.amazonaws.com/dev/",
+    COPYRIGHT_SHOW: false,
   },
 };
 

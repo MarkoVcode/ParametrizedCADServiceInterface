@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
 import { Buffer } from 'buffer';
 import useConfig from "./useConfig";
 import { ObjectLinkAssembler, isFormDataDifferent } from "../tools/CadQueryAPI";
@@ -68,7 +69,7 @@ const ModelConfig = (props) => {
   }
   //https://stackoverflow.com/questions/56219640/how-to-download-a-file-through-an-api-in-react
   return (
-    <Box>
+    <Container maxWidth="sm">
       <Typography gutterBottom variant="h6" component="div">
         Model Parameters
       </Typography>
@@ -81,8 +82,8 @@ const ModelConfig = (props) => {
         validationMode="ValidateAndShow"
         onChange={onChange}
       />
-      <Button onClick={onRender} type="submit">Render Preview</Button>
-    </Box>
+      <Button onClick={onRender} type="submit" variant="contained">Render Preview</Button>
+    </Container>
   );
 };
 

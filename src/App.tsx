@@ -38,8 +38,8 @@ function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="https://softcognito.org/">
+        SoftCognito
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -163,11 +163,6 @@ export default function App() {
             >
               {pageTitle}
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -179,6 +174,15 @@ export default function App() {
               px: [1],
             }}
           >
+            <Box
+              component="img"
+              sx={{
+                height: 50, // Adjust the height of the logo as needed
+                marginRight: 3, // Space between logo and text
+              }}
+              alt="Logo"
+              src="http://localhost:8080/tocmenu1.png" // Replace with your logo URL
+            />
             <IconButton onClick={toggleDrawer}>
               <ChevronLeftIcon />
             </IconButton>
@@ -198,7 +202,7 @@ export default function App() {
               <ListItemText onClick={onModelsClick} primary="Models" />
             </ListItemButton>
             <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
+
           </List>
         </Drawer>
         <Box
@@ -217,11 +221,11 @@ export default function App() {
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             {showHome && <Home />}
             {showModels &&
-            <Grid container spacing={3}>
-              <ModelList />
-            </Grid>
+              <Grid container spacing={3}>
+                <ModelList />
+              </Grid>
             }
-            <Copyright sx={{ pt: 4 }} />
+            {config.app.COPYRIGHT_SHOW && <Copyright sx={{ pt: 4 }} />}
           </Container>
         </Box>
       </Box>
