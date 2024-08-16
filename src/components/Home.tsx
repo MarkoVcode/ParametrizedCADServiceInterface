@@ -7,6 +7,9 @@ import useConfig from "./useConfig";
 
 export default function Home() {
   const config = useConfig();
+
+  const imageSrc = config.app.PUBLIC_URL + "/tocmain1.png";
+
   return (
     <Grid container spacing={3}>
       {/* Chart */}
@@ -20,11 +23,11 @@ export default function Home() {
           }}
         >
           <Typography variant="h4" component="h1" gutterBottom>
-            Welcome to [Your Service Name]!
+            Welcome to <b>ThingOnCloud.com</b>!
           </Typography>
 
           <Typography variant="body1" paragraph>
-            We’re thrilled to have you here! [Your Service Name] is a free online platform where you can explore, modify, and download a wide range of parametrized 3D objects. Whether you’re a hobbyist, a designer, or someone new to 3D printing, our collection of customizable models is designed to help you bring your ideas to life.
+            We’re thrilled to have you here! ThingOnCloud.com is a free online platform where you can explore, modify, and download a wide range of parametrized 3D objects. Whether you’re a hobbyist, a designer, or someone new to 3D printing, our collection of customizable models is designed to help you bring your ideas to life.
           </Typography>
 
           <Typography variant="body1" paragraph>
@@ -36,7 +39,7 @@ export default function Home() {
           </Typography>
 
           <Typography variant="body2" color="textSecondary">
-            The [Your Service Name] Team
+            The ThingOnCloud.com People
           </Typography>
         </Paper>
       </Grid>
@@ -53,7 +56,7 @@ export default function Home() {
             boxShadow: 4,
           }}
           alt="Example of a 3D object"
-          src="http://localhost:8080/tocmain1.png" // Replace with your image URL
+          src={imageSrc}
         />
    
       </Grid>

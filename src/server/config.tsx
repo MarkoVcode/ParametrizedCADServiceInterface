@@ -27,11 +27,10 @@ const config = {
     DIST_URL: isLocal ? "http://localhost:8080" : String(process.env.APP_DIST_URL),
     /** Where the contents of the `public` folder are hosted (might be the same as `config.app.DIST_URL`) */
     PUBLIC_URL: isLocal ? "http://localhost:8080" : String(process.env.APP_PUBLIC_URL),
+    CAD_SERVICE_URL: isLocal ? "http://localhost:8000" :"https://bvu4yujc2fonmgmjdco6s6aknq0yjjxq.lambda-url.eu-west-2.on.aws",
     //CAD_SERVICE_URL: "https://bvu4yujc2fonmgmjdco6s6aknq0yjjxq.lambda-url.eu-west-2.on.aws",
-    CAD_SERVICE_URL: "http://127.0.0.1:8000",
-    APP_URL: "http://localhost:3000",
-    //APP_URL: "https://a7zw71wyn1.execute-api.us-east-1.amazonaws.com/dev/",
-    COPYRIGHT_SHOW: false,
+    COPYRIGHT_SHOW: true,
+    RENDER_ON_PARAM_CHANGE: false,
   },
 };
 

@@ -2,29 +2,13 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { Buffer } from 'buffer';
 import useConfig from "./useConfig";
-import { ObjectLinkAssembler, isFormDataDifferent } from "../tools/CadQueryAPI";
-
-import {
-  materialRenderers,
-  materialCells,
-} from '@jsonforms/material-renderers';
+import { isFormDataDifferent } from "../tools/CadQueryAPI";
+import { materialRenderers, materialCells } from '@jsonforms/material-renderers';
 import { JsonForms } from '@jsonforms/react';
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-
-const ModelConfig = (props) => {
+const ModelForm = (props) => {
   const config = useConfig();
   const [form, setForm] = useState({});
   const [formUI, setFormUI] = useState([]);
@@ -39,11 +23,19 @@ const ModelConfig = (props) => {
         setFormValues(data.formsData);
         setForm(data.schema);
         setFormUI(data.uischema);
+        if (!config.app.RENDER_ON_PARAM_CHANGE && data.formsData.objectLink != undefined) {
+          props.setModelLink(data.formsData.objectLink);
+        }
       });
   }, [])
 
+  useEffect(() => {
+    if (config.app.RENDER_ON_PARAM_CHANGE) {
+      props.setModelLink(formValues.objectLink);
+    }
+  }, [formValues])
+
   const onChange = ({ errors, data }) => {
-    console.log(isFormDataDifferent(formValues, data));
     if (isFormDataDifferent(formValues, data)) {
       if (errors.length == 0) {
         const requestOptions = {
@@ -55,7 +47,7 @@ const ModelConfig = (props) => {
           .then(response => response.json())
           .then(newdata => {
             //do not update if status code != 200
-            setFormValues({ ...newdata})
+            setFormValues({ ...newdata })
           })
       }
     }
@@ -63,15 +55,18 @@ const ModelConfig = (props) => {
 
   const onRender = (event) => {
     event.preventDefault();
-    if(formValues.objectLink != undefined) {
+    if (formValues.objectLink != undefined) {
       props.setModelLink(formValues.objectLink);
     }
   }
-  //https://stackoverflow.com/questions/56219640/how-to-download-a-file-through-an-api-in-react
+
   return (
-    <Container maxWidth="sm">
+    <Paper sx={{
+      p: 2, display: 'flex', flexDirection: 'column', borderRadius: 2,
+      boxShadow: 4
+    }}>
       <Typography gutterBottom variant="h6" component="div">
-        Model Parameters
+        Model Parameters [mm]
       </Typography>
       <JsonForms
         schema={form}
@@ -82,9 +77,9 @@ const ModelConfig = (props) => {
         validationMode="ValidateAndShow"
         onChange={onChange}
       />
-      <Button onClick={onRender} type="submit" variant="contained">Render Preview</Button>
-    </Container>
+      {!config.app.RENDER_ON_PARAM_CHANGE &&  <Button onClick={onRender} type="submit" variant="contained">Render Preview</Button>}
+    </Paper>
   );
 };
 
-export default ModelConfig;
+export default ModelForm;

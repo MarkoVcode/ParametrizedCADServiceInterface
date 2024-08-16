@@ -1,33 +1,24 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
-import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
 import ModelInfo from './ModelInfo';
-import Typography from '@mui/material/Typography';
 
 interface HeaderProps {
   children?: React.ReactNode;
 }
 
 export default function ModelHeader(props: HeaderProps) {
-  const [model, setModel] = useState({});
-
-  useEffect(() => {
-    props.modelsData.forEach((inModel) => {
-      (inModel.id == props.modelId) ? setModel(inModel) : null;
-  });
-  }, []);
 
   return (
-    <div>
+    <Paper sx={{
+      p: 2, display: 'flex', flexDirection: 'column', borderRadius: 2,
+      boxShadow: 4
+    }}>
       <Grid item xs={12} md={12} container>
-        <Button onClick={props.clearModelId} variant="contained">Back to Models</Button>
-        <ModelInfo modelName={model.name} modelDescription={model.description} />
+        <Button onClick={props.clearModel} variant="contained">Back to Models</Button>
+        <ModelInfo modelName={props.modelData.name} modelDescription={props.modelData.description} />
       </Grid>
-    </div>
+    </Paper>
   );
 }
