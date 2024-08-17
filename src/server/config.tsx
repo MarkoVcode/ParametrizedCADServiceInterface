@@ -31,6 +31,7 @@ const config = {
     //CAD_SERVICE_URL: "https://bvu4yujc2fonmgmjdco6s6aknq0yjjxq.lambda-url.eu-west-2.on.aws",
     COPYRIGHT_SHOW: true,
     RENDER_ON_PARAM_CHANGE: false,
+    ROUTER_PATH_BASENAME: isLocal ? '/' : '/dev'
   },
 };
 

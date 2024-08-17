@@ -9,7 +9,6 @@ import "./index.css";
  */
 import * as React from "react";
 import { hydrate } from "react-dom";
-import { BrowserRouter } from "react-router-dom";
 import ConfigContext from "../components/ConfigContext";
 import { Config } from "../server/config";
 import App from "../App";
@@ -23,11 +22,9 @@ const render = () => {
   hydrate(
     <>
       {/* The configuration is the outmost component. This allows us to read the configuration even in the theme */}
-      <BrowserRouter>
-        <ConfigContext.Provider value={config}>
-          <App />
-        </ConfigContext.Provider>
-      </BrowserRouter>
+      <ConfigContext.Provider value={config}>
+        <AppAlt />
+      </ConfigContext.Provider>
     </>,
     document.getElementById("root"),
   );

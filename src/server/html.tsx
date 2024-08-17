@@ -20,6 +20,7 @@ const html = ({
   <html lang="en">
     <head>
       <meta charset="utf-8" />
+      <base href="/">
       <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       <meta name="theme-color" content="${config.app.THEME_COLOR}" />
       <title>${config.app.TITLE}</title>
