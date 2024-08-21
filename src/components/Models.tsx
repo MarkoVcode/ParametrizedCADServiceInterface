@@ -4,19 +4,29 @@ import LoadingSpinner from './LoadingSpinner';
 import Grid from '@mui/material/Grid';
 import { fetchModel } from "../tools/CadQueryAPI";
 import useConfig from "./useConfig";
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 
 const Models = (props) => {
-  const config = useConfig();
-  const params = useParams();
-  const [model, setModel] = useState(null);
+  //const config = useConfig();
+ // const params = useParams();
+ // const [models, setModels] = useState(null);
+ // const location = useLocation();
 
-  const onClearModel = (event) => {
-    setModel(null);
-  }
+  // const onClearModel = (event) => {
+  //   setModel(null);
+  // }
 
   useEffect(()  => {
-    console.log(params);
+    // console.log(params);
+    // fetch(config.app.CAD_SERVICE_URL + '/models')
+    // .then((res) => {
+    //     return res.json();
+    // })
+    // .then((data) => {
+    //     setModels(data);
+    // });
+   // console.log(location);
+    //return <span>Path : {location.pathname}</span>
     // console.log("QQA:" + props.modelId + "-" + props.modelParams);
     // async function apiCall(config, modelId) {
     //   let model = await fetchModel(config, modelId);
@@ -29,20 +39,14 @@ const Models = (props) => {
     // }
   }, [])
 
-  const ModelConfig = lazy(() => import("./ModelConfig"));
+  //const ModelConfig = lazy(() => import("./ModelConfig"));
   const ModelList = lazy(() => import("./ModelList"));
   
   return (
     <Grid container spacing={3}>
-      {model ? (
         <Suspense fallback={<LoadingSpinner />}>
-          <ModelConfig model={model} onClearModel={onClearModel} />
+          <ModelList />
         </Suspense>
-      ) : (
-        <Suspense fallback={<LoadingSpinner />}>
-          <ModelList setModel={setModel} />
-        </Suspense>
-      )}
     </Grid>
   );
 }

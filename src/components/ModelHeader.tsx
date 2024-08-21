@@ -16,8 +16,7 @@ export default function ModelHeader(props: HeaderProps) {
       boxShadow: 4
     }}>
       <Grid item xs={12} md={12} container>
-        <Button onClick={props.clearModel} variant="contained">Back to Models</Button>
-        <ModelInfo modelName={props.modelData.name} modelDescription={props.modelData.description} />
+        <ModelInfo model={props.modelData} />
       </Grid>
     </Paper>
   );

@@ -6,21 +6,40 @@ import Typography from '@mui/material/Typography';
 import useConfig from "./useConfig";
 import { isFormDataDifferent } from "../tools/CadQueryAPI";
 import { materialRenderers, materialCells } from '@jsonforms/material-renderers';
+import { useParams } from 'react-router-dom';
 import { JsonForms } from '@jsonforms/react';
+
+
 
 const ModelForm = (props) => {
   const config = useConfig();
   const [form, setForm] = useState({});
   const [formUI, setFormUI] = useState([]);
   const [formValues, setFormValues] = useState({});
+ // const [triggerLinkRender, setTriggerLinkRender] = useState(false);
+  const params = useParams();
+
+  const selectData = (data, modelPath) => {
+    console.log("selectData works")
+    const dataFromLocal = localStorage.getItem(modelPath);
+    if (dataFromLocal != undefined) {
+      localStorage.removeItem(modelPath);
+     // setTriggerLinkRender(true);
+      return JSON.parse(dataFromLocal);
+    }
+    return data;
+  }
 
   useEffect(() => {
-    fetch(config.app.CAD_SERVICE_URL + '/models/' + props.modelId + '/validator')
+    // HANDLE 404 here as the URL might be typed in
+    console.log("linkparams:");
+    console.log(props.linkParams);
+    fetch(config.app.CAD_SERVICE_URL + '/models/' + params.modelId + '/validator')
       .then((res) => {
         return res.json();
       })
       .then((data) => {
-        setFormValues(data.formsData);
+        setFormValues(selectData(data.formsData, "/models/" + params.modelId));
         setForm(data.schema);
         setFormUI(data.uischema);
         if (!config.app.RENDER_ON_PARAM_CHANGE && data.formsData.objectLink != undefined) {
@@ -31,6 +50,8 @@ const ModelForm = (props) => {
 
   useEffect(() => {
     if (config.app.RENDER_ON_PARAM_CHANGE) {
+    //  console.log("confirmed rerender"); || triggerLinkRender
+     // setTriggerLinkRender(false);
       props.setModelLink(formValues.objectLink);
     }
   }, [formValues])
@@ -77,7 +98,7 @@ const ModelForm = (props) => {
         validationMode="ValidateAndShow"
         onChange={onChange}
       />
-      {!config.app.RENDER_ON_PARAM_CHANGE &&  <Button onClick={onRender} type="submit" variant="contained">Render Preview</Button>}
+      {!config.app.RENDER_ON_PARAM_CHANGE && <Button onClick={onRender} type="submit" variant="contained">Render Preview</Button>}
     </Paper>
   );
 };

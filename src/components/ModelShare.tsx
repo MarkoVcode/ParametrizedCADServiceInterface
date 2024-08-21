@@ -14,7 +14,7 @@ interface ShareProps {
 export default function ModelShare(props: InfoProps) {
   return (
     <Typography color="text.secondary" variant="body2">
-      Model Share
+      Model Share share link here ????
     </Typography>
   );
 }

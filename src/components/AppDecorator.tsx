@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState, useEffect } from 'react';
 import { styled, createTheme, ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -10,12 +11,9 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import Models from './Models';
-import Home from './Home';
 import useConfig from "./useConfig";
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -23,11 +21,25 @@ import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import { Link as RouterLink, NavLink } from "react-router-dom";
+import { Link as RouterLink, NavLink, useLocation, Outlet, useParams } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
 function Copyright(props: any) {
+    const config = useConfig();
+    const [version, setVersion] = useState({});
+
+    useEffect(() => {
+        fetch(config.app.CAD_SERVICE_URL + '/version')
+            .then((res) => {
+                return res.json();
+            })
+            .then((data) => {
+                setVersion(data);
+            });
+    }, []);
+
+
     return (
         <Box
             component="footer"
@@ -40,7 +52,13 @@ function Copyright(props: any) {
         >
             <Container maxWidth="sm">
                 <Typography variant="body2" color="textSecondary">
-                    {'© '}
+                    {version.version &&
+                    <>
+                    API ver.:
+                    {version.version}
+                    </>
+                    }
+                    { '© '}
                     {new Date().getFullYear()} MarkoVcode. All rights reserved.
                 </Typography>
 
@@ -124,17 +142,27 @@ const AppBar = styled(MuiAppBar, {
 export default function AppDecorator(props) {
     const config = useConfig();
     const [open, setOpen] = React.useState(true);
-    const [pageTitle, setPageTitle] = React.useState("Home");
     const [linkModelId, setLinkModelId] = React.useState();
     const [linkModelParams, setLinkModelParams] = React.useState();
+    const location = useLocation();
+    const params = useParams();
 
     const toggleDrawer = () => {
         setOpen(!open);
     };
 
-    React.useEffect(() => {
-
-    }, [])
+    const getLocation = () => {
+        if (location.pathname == "/") {
+            return "Home";
+        } else if (location.pathname == "/models") {
+            return "Models";
+        } else if (location.pathname.startsWith("/models/") && params.modelId) {
+            return "Model";
+        } else if (location.pathname.startsWith("/underthehood")) {
+            return "Under The Hood";
+        }
+        return location.pathname;
+    }
 
     const imageSrc = config.app.PUBLIC_URL + "/tocmenu1.png";
 
@@ -168,7 +196,7 @@ export default function AppDecorator(props) {
                                 noWrap
                                 sx={{ flexGrow: 1 }}
                             >
-                                {props.pageTitle}
+                                {getLocation()}
                             </Typography>
                         </Toolbar>
                     </AppBar>
@@ -197,11 +225,12 @@ export default function AppDecorator(props) {
                         <Divider />
                         <List component="nav">
                             <NavLink
-                                    to={'/'}
-                                    className={({ isActive, isPending }) =>
-                                        isPending ? "pending" : isActive ? "active" : ""
-                                    }
-                                    >
+                                style={{ textDecoration: 'none' }}
+                                to={'/'}
+                                className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? "active" : ""
+                                }
+                            >
                                 <ListItemButton>
                                     <ListItemIcon>
                                         <DashboardIcon />
@@ -209,17 +238,24 @@ export default function AppDecorator(props) {
                                     <ListItemText primary="Home" />
                                 </ListItemButton>
                             </NavLink>
-                            <RouterLink to={'/models'} >
+                            <NavLink
+                                style={{ textDecoration: 'none' }}
+                                to={'/models'}
+                                className={({ isActive, isPending }) =>
+                                    isPending ? "pending" : isActive ? "active" : ""
+                                }
+                            >
                                 <ListItemButton>
                                     <ListItemIcon>
                                         <ShoppingCartIcon />
                                     </ListItemIcon>
                                     <ListItemText primary="Models" />
                                 </ListItemButton>
-                            </RouterLink>
+                            </NavLink>
                             <Divider sx={{ my: 1 }} />
 
                         </List>
+                        
                     </Drawer>
                     <Box
                         component="main"
@@ -235,7 +271,7 @@ export default function AppDecorator(props) {
                     >
                         <Toolbar />
                         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                            {props.children}
+                            <Outlet />
                             {config.app.COPYRIGHT_SHOW && <Copyright sx={{ pt: 4 }} />}
                         </Container>
                     </Box>
