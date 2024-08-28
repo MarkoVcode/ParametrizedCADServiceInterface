@@ -1,13 +1,14 @@
 import * as React from "react";
-import ModelList from './components/ModelList';
-import ModelConfig from './components/ModelConfig';
-import ModelLinkProcessor from './components/ModelLinkProcessor';
-import PageNotFound from './components/PageNotFound';
-import Home from './components/Home';
+// import ModelList from './components/ModelList';
+// import ModelConfig from './components/ModelConfig';
+// import ModelLinkProcessor from './components/ModelLinkProcessor';
+// import PageNotFound from './components/PageNotFound';
+// import Home from './components/Home';
+// import UnderTheHood from "./components/UnderTheHood";
 import useConfig from "./components/useConfig";
-import UnderTheHood from "./components/UnderTheHood";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppDecorator from "./components/AppDecorator";
+import { lazyLoadRoutes } from "./components/LazyLoadRoutes";
 
 export default function App() {
   const config = useConfig();
@@ -19,27 +20,27 @@ export default function App() {
       children: [
         {
           path: '/',
-          element: <Home />
+          element: lazyLoadRoutes('Home')
         },
         {
           path: '/models',
-          element: <ModelList />
+          element: lazyLoadRoutes('ModelList'),
         },
         {
           path: '/models/:modelId',
-          element: <ModelConfig />
+          element: lazyLoadRoutes('ModelConfig')
         },
         {
           path: '/models/:modelId/:modelLink',
-          element: <ModelLinkProcessor />
+          element: lazyLoadRoutes('ModelLinkProcessor')
         },
         {
           path: '/underthehood',
-          element: <UnderTheHood />
+          element: lazyLoadRoutes('UnderTheHood')
         },
         {
           path: '*',
-          element: <PageNotFound />
+          element: lazyLoadRoutes('PageNotFound')
         }
       ]
     }

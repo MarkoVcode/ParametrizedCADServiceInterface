@@ -20,7 +20,7 @@ const ModelForm = (props) => {
   const params = useParams();
 
   const selectData = (data, modelPath) => {
-    console.log("selectData works")
+  //  console.log("selectData works")
     const dataFromLocal = localStorage.getItem(modelPath);
     if (dataFromLocal != undefined) {
       localStorage.removeItem(modelPath);
@@ -32,8 +32,8 @@ const ModelForm = (props) => {
 
   useEffect(() => {
     // HANDLE 404 here as the URL might be typed in
-    console.log("linkparams:");
-    console.log(props.linkParams);
+   // console.log("linkparams:");
+   // console.log(props.linkParams);
     fetch(config.app.CAD_SERVICE_URL + '/models/' + params.modelId + '/validator')
       .then((res) => {
         return res.json();
@@ -54,6 +54,7 @@ const ModelForm = (props) => {
      // setTriggerLinkRender(false);
       props.setModelLink(formValues.objectLink);
     }
+    props.setModelParams(formValues);
   }, [formValues])
 
   const onChange = ({ errors, data }) => {

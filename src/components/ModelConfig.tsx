@@ -11,6 +11,7 @@ import useConfig from "./useConfig";
 const ModelConfig = (props) => {
   const [model, setModel] = useState();
   const [modelLink, setModelLink] = useState();
+  const [modelParams, setModelParams] = useState();
   const params = useParams();
   const config = useConfig();
 
@@ -33,13 +34,13 @@ const ModelConfig = (props) => {
           <ModelHeader modelData={model} />
         </Grid>
         <Grid item xs={12} md={8} lg={4}>
-          <ModelForm modelId={model.id} setModelLink={setModelLink} linkParams={params.modelLink} />
+          <ModelForm modelId={model.id} setModelLink={setModelLink} linkParams={params.modelLink} setModelParams={setModelParams}/>
         </Grid>
         <Grid item xs={12} md={8} lg={8}>
           <ModelViewer modelId={model.id} modelLink={modelLink} />
         </Grid>
         <Grid item xs={12}>
-          <ModelExport modelId={model.id} modelLink={modelLink} />
+          <ModelExport modelId={model.id} modelLink={modelLink} modelParams={modelParams}/>
         </Grid>
       </>}
     </Grid>

@@ -9,7 +9,7 @@ export default function PageNotFound() {
   useEffect(() => {
     setTimeout(() => {
       navigate('/');
-    }, 1000)
+    }, 3000)
   }, [])
 
   return (

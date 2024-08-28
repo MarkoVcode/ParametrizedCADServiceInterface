@@ -20,18 +20,12 @@ export default function ModelExport(props: TitleProps) {
 
   const handleDownload = async () => {
     try {
-        fetch(config.app.CAD_SERVICE_URL + "/models/0000/cad?export=true", {
+        fetch(config.app.CAD_SERVICE_URL + "/models/" + props.modelId + "/cad?export=true", {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            "height": 60.0,
-            "width": 80.0,
-            "thickness": 10.0,
-            "diameter": 90.0,
-            "padding": 12.0
-        }) 
+          body: JSON.stringify(props.modelParams)
         }).then(res => res.arrayBuffer())  //  fetch('https://fastly.picsum.photos/id/669/536/354.jpg?hmac=MwxCihHFk-YctYB8BovPqrGFY6EuCSFrWBC3jvgxyiw')
         .then(buffer => { 
           const blob = new Blob([buffer], {

@@ -26,7 +26,7 @@ const ModelViewer = (props) => {
     //https://stackoverflow.com/questions/73247936/how-to-dynamically-track-width-height-of-div-in-react-js
 
     React.useEffect(() => {
-        console.log("OBSERVER");
+      //  console.log("OBSERVER");
         if (!observedDiv.current) {
             // we do not initialize the observer unless the ref has
             // been assigned
