@@ -2,7 +2,6 @@
 service: serverless-react-app
 frameworkVersion: "3"
 useDotenv: true
-variablesResolutionMode: 20210326
 disabledDeprecations:
   - CLI_OPTIONS_SCHEMA # some Serverless plugins haven't been updated yet and generate warnings
 
@@ -14,7 +13,6 @@ provider:
   memorySize: 512
   timeout: 6
   logRetentionInDays: 7
-  lambdaHashingVersion: 20201221 # for upcoming Serverless v3
 
   apiGateway:
     shouldStartNameWithService: true # for upcoming Serverless v3
