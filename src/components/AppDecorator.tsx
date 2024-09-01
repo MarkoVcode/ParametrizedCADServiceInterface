@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { styled, createTheme, ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -21,7 +21,7 @@ import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import { Link as RouterLink, NavLink, useLocation, Outlet, useParams } from "react-router-dom";
+import { Link as NavLink, useLocation, Outlet, useParams } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
@@ -29,16 +29,38 @@ function Copyright(props: any) {
     const config = useConfig();
     const [version, setVersion] = useState({});
 
-    useEffect(() => {
-        fetch(config.app.CAD_SERVICE_URL + '/version')
-            .then((res) => {
-                return res.json();
-            })
-            .then((data) => {
-                setVersion(data);
-            });
-    }, []);
+    const abortControllerRef = useRef<AbortController | null>(null);
 
+    useEffect(() => {
+
+        const fetchVersion = async () => {
+            abortControllerRef.current?.abort();
+            abortControllerRef.current = new AbortController();
+            try {
+                const response = await fetch(config.app.CAD_SERVICE_URL + '/version', {
+                    signal: abortControllerRef.current?.signal
+                });
+                if (response.status != 200) {
+                    console.log("Something goes wrong!", response);
+                    alert("API is having some technical problems. Please come back later.");
+                } else {
+                    const version = (await response.json());
+                    setVersion(version);
+                }
+            } catch (err: any) {
+                if (err.name === "AbortError") {
+                    console.info("API call was cancelled!");
+                } else {
+                    console.error("The API service is not working!!", err.name);  // connection is dead service is not responding
+                    alert("It seems like there is no API connection or the service is down. Please try again later.");
+                }
+            } finally {
+                //console.log("it is done");
+            }
+        };
+
+        fetchVersion();
+    }, []);
 
     return (
         <Box
@@ -53,12 +75,12 @@ function Copyright(props: any) {
             <Container maxWidth="sm">
                 <Typography variant="body2" color="textSecondary">
                     {version.version &&
-                    <>
-                    API ver.:
-                    {version.version}
-                    </>
+                        <>
+                            API ver.:
+                            {version.version}
+                        </>
                     }
-                    { '© '}
+                    {'© '}
                     {new Date().getFullYear()} MarkoVcode. All rights reserved.
                 </Typography>
 
@@ -255,7 +277,7 @@ export default function AppDecorator(props) {
                             <Divider sx={{ my: 1 }} />
 
                         </List>
-                        
+
                     </Drawer>
                     <Box
                         component="main"

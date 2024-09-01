@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Grid from '@mui/material/Grid';
 import ModelInfo from './ModelInfo';
 import Card from '@mui/material/Card';
@@ -13,16 +13,62 @@ const ModelList = (props) => {
 
     const imageSrc = config.app.PUBLIC_URL + "/tocmain1.png";
 
+    const abortControllerRef = useRef<AbortController | null>(null);
+
     useEffect(() => {
-        fetch(config.app.CAD_SERVICE_URL + '/models')
-            .then((res) => {
-                return res.json();
-            })
-            .then((data) => {
-                setModels(data);
-                // console.log(data)
-            });
+
+        const fetchModels = async () => {
+            abortControllerRef.current?.abort();
+            abortControllerRef.current = new AbortController();
+            try {
+              const response = await fetch(config.app.CAD_SERVICE_URL + '/models', {
+                signal: abortControllerRef.current?.signal
+              });
+              if (response.status == 404) {
+                //should not happen
+              } else if (response.status == 200) {
+                const models = (await response.json());
+                setModels(models);
+              } else {
+                console.log("Something goes wrong!", response);
+                alert("API is having some technical problems. Please come back later.");
+              }
+            } catch (err: any) {
+              if (err.name === "AbortError") {
+                console.info("API call was cancelled!");
+              } else {
+                console.error("The API service is not working!!", err.name);  // connection is dead service is not responding
+                alert("It seems like there is no API connection or the service is down. Please try again later.");
+              }
+            } finally {
+              //console.log("it is done");
+            }
+          };
+      
+          fetchModels();
     }, []);
+
+    // useEffect(() => {
+    //     const controller = new AbortController();
+    //     const signal = controller.signal;
+    //     fetch(config.app.CAD_SERVICE_URL + '/models', { signal })
+    //         .then((res) => {
+    //             return res.json();
+    //         })
+    //         .then((data) => {
+    //             setModels(data);
+    //         })
+    //         .catch(err => {
+    //             if (err.name === "AbortError") {
+    //                 console.log("API call was cancelled!");
+    //             } else {
+    //                 console.log(err.name);
+    //             }
+    //         });
+    //     return () => {
+    //         controller.abort();
+    //     }
+    // }, []);
 
     return (
         <Grid container spacing={3}>

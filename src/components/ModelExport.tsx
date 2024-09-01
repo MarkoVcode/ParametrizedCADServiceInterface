@@ -19,6 +19,8 @@ export default function ModelExport(props: TitleProps) {
   const shareLink = config.app.URL + "/models/" + props.modelId + "/" + props.modelLink;
 
   const handleDownload = async () => {
+    const controller = new AbortController();
+    const signal = controller.signal;
     try {
         fetch(config.app.CAD_SERVICE_URL + "/models/" + props.modelId + "/cad?export=true", {
           method: 'POST',
@@ -39,9 +41,12 @@ export default function ModelExport(props: TitleProps) {
           document.body.appendChild(a);
           a.click();
          })
-       
     } catch (error) {
-      alert("Something went wrongBBBBBBBBBBB");
+      alert("Something went wrong with downloading assets");
+    }
+
+    return () => {
+      controller.abort();
     }
   };
 

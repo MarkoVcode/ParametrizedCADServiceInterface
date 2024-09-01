@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -9,49 +9,69 @@ import { materialRenderers, materialCells } from '@jsonforms/material-renderers'
 import { useParams } from 'react-router-dom';
 import { JsonForms } from '@jsonforms/react';
 
-
-
 const ModelForm = (props) => {
   const config = useConfig();
   const [form, setForm] = useState({});
   const [formUI, setFormUI] = useState([]);
   const [formValues, setFormValues] = useState({});
- // const [triggerLinkRender, setTriggerLinkRender] = useState(false);
+  // const [triggerLinkRender, setTriggerLinkRender] = useState(false);
   const params = useParams();
 
   const selectData = (data, modelPath) => {
-  //  console.log("selectData works")
+    //  console.log("selectData works")
     const dataFromLocal = localStorage.getItem(modelPath);
     if (dataFromLocal != undefined) {
       localStorage.removeItem(modelPath);
-     // setTriggerLinkRender(true);
+      // setTriggerLinkRender(true);
       return JSON.parse(dataFromLocal);
     }
     return data;
   }
 
+  const abortControllerRef = useRef<AbortController | null>(null);
+
   useEffect(() => {
-    // HANDLE 404 here as the URL might be typed in
-   // console.log("linkparams:");
-   // console.log(props.linkParams);
-    fetch(config.app.CAD_SERVICE_URL + '/models/' + params.modelId + '/validator')
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setFormValues(selectData(data.formsData, "/models/" + params.modelId));
-        setForm(data.schema);
-        setFormUI(data.uischema);
-        if (!config.app.RENDER_ON_PARAM_CHANGE && data.formsData.objectLink != undefined) {
-          props.setModelLink(data.formsData.objectLink);
-        }
-      });
-  }, [])
+
+      const fetchValidator = async () => {
+          abortControllerRef.current?.abort();
+          abortControllerRef.current = new AbortController();
+          try {
+            const response = await fetch(config.app.CAD_SERVICE_URL + '/models/' + params.modelId + '/validator', {
+              signal: abortControllerRef.current?.signal
+            });
+            if (response.status == 404) {
+              //should not happen here
+            } else if (response.status == 200) {
+              const data = (await response.json());
+              setFormValues(selectData(data.formsData, "/models/" + params.modelId));
+              setForm(data.schema);
+              setFormUI(data.uischema);
+              if (!config.app.RENDER_ON_PARAM_CHANGE && data.formsData.objectLink != undefined) {
+                props.setModelLink(data.formsData.objectLink);
+              }
+            } else {
+              console.log("Something goes wrong!", response);
+              alert("API is having some technical problems. Please come back later.");
+            }
+          } catch (err: any) {
+            if (err.name === "AbortError") {
+              console.info("API call was cancelled!");
+            } else {
+              console.error("The API service is not working!!", err);  // connection is dead service is not responding
+              alert("It seems like there is no API connection or the service is down. Please try again later.");
+            }
+          } finally {
+            //console.log("it is done");
+          }
+        };
+    
+        fetchValidator();
+  }, []);
 
   useEffect(() => {
     if (config.app.RENDER_ON_PARAM_CHANGE) {
-    //  console.log("confirmed rerender"); || triggerLinkRender
-     // setTriggerLinkRender(false);
+      //  console.log("confirmed rerender"); || triggerLinkRender
+      // setTriggerLinkRender(false);
       props.setModelLink(formValues.objectLink);
     }
     props.setModelParams(formValues);
