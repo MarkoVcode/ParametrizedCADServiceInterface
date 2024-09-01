@@ -7,12 +7,6 @@ import LoadingSpinner from './LoadingSpinner';
 export default function ModelIsLoading() {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setTimeout(() => {
-      navigate('/');
-    }, 6000)
-  }, [])
-
   return (
     <Container component="main" maxWidth="xs" sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <Grid container spacing={2} alignItems="center" justifyContent="center">
